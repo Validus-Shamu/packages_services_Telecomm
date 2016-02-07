@@ -188,7 +188,7 @@ public class CallsManager extends Call.ListenerBase implements VideoProviderProx
             HeadsetMediaButtonFactory headsetMediaButtonFactory,
             ProximitySensorManagerFactory proximitySensorManagerFactory,
             InCallWakeLockControllerFactory inCallWakeLockControllerFactory,
-            ViceNotifier viceNotifier)
+            ViceNotifier viceNotifier,
             BlacklistCallNotifier blacklistCallNotifier) {
         mContext = context;
         mLock = lock;
@@ -293,13 +293,14 @@ public class CallsManager extends Call.ListenerBase implements VideoProviderProx
                 // call notifier and the call logger manually.
                 mMissedCallNotifier.showMissedCallNotification(incomingCall);
                 mCallLogManager.logCall(incomingCall, Calls.MISSED_TYPE);
-        } else {
-            if (TelephonyManager.getDefault().getMultiSimConfiguration()
-                == TelephonyManager.MultiSimVariants.DSDA) {
-                incomingCall.mIsActiveSub = true;
+            } else {
+                if (TelephonyManager.getDefault().getMultiSimConfiguration()
+                    == TelephonyManager.MultiSimVariants.DSDA) {
+                    incomingCall.mIsActiveSub = true;
+                }
+                addCall(incomingCall);
+                setActiveSubscription(incomingCall.getTargetPhoneAccount().getId());
             }
-            addCall(incomingCall);
-            setActiveSubscription(incomingCall.getTargetPhoneAccount().getId());
         }
     }
 
@@ -2374,6 +2375,7 @@ public class CallsManager extends Call.ListenerBase implements VideoProviderProx
                 listener.onMergeFailed(call);
             }
         }
+    }
 
     protected boolean isCallBlacklisted(Call c) {
         final String number = c.getNumber();
