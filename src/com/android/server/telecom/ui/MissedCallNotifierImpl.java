@@ -168,7 +168,7 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
             intent.setAction(TelecomManager.ACTION_SHOW_MISSED_CALLS_NOTIFICATION);
             intent.putExtra(TelecomManager.EXTRA_NOTIFICATION_COUNT, count);
             intent.putExtra(TelecomManager.EXTRA_NOTIFICATION_PHONE_NUMBER,
-                    call != null ? call.getPhoneNumber() : null);
+                    call != null ? call.getNumber() : null);
             intent.putExtra(TelecomManager.EXTRA_CLEAR_MISSED_CALLS_INTENT,
                     createClearMissedCallsPendingIntent());
 
